@@ -75,7 +75,7 @@
     height: 20,
     colors: () => colorArray,
     breaks: (viewScale) => viewScale?.breaks,
-    labelFormat: (d) => d,
+    labelFormat: (d) => d.toFixed(2),
   });
 
   style.legends = [legend];
