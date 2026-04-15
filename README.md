@@ -9,13 +9,15 @@ Tiled grids of open JRC data for use with [gridviz](https://github.com/eurostat/
 
 You can run the pipeline for all TIF files in a folder like so:
 
-#### Safer
+`python batch_pipeline.py --workers 2 --tile-workers 2 --overwrite`
 
-python batch_pipeline.py --workers 2 --tile-workers 2 --overwrite
+where:
 
-#### More aggressive
+`--workers` = Number of datasets to process in parallel.
 
-python batch_pipeline.py --workers 3 --tile-workers 3 --no-overwrite
+and
+
+`--tile-workers` = Number of processors to use inside tiling for each dataset.
 
 ## Examples
 

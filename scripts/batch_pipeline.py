@@ -18,7 +18,7 @@ def run_one(base_name: str, overwrite: bool, tile_workers: int):
     )
 
 
-def run_batch(overwrite=True, max_workers=2, tile_workers=3, limit=None):
+def run_batch(overwrite=True, max_workers=3, tile_workers=5, limit=None):
     start = time.perf_counter()
 
     tif_files = sorted(
@@ -67,13 +67,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--workers",
         type=int,
-        default=2,
+        default=3,
         help="Number of datasets to process in parallel."
     )
     parser.add_argument(
         "--tile-workers",
         type=int,
-        default=3,
+        default=5,
         help="Number of processors to use inside tiling for each dataset."
     )
     parser.add_argument(

@@ -1,6 +1,6 @@
 import subprocess
 
-from config import RESOLUTIONS, GDALWARP, filtered_file, aggregated_file, aggregated_dir
+from config import NODATA_VALUE, RESOLUTIONS, GDALWARP, filtered_file, aggregated_file, aggregated_dir
 
 def run(base_name: str, overwrite=True):
     print(f"=== AGGREGATE {base_name} ===")
@@ -21,6 +21,9 @@ def run(base_name: str, overwrite=True):
             "-tr", str(res), str(res),
             "-r", "average",
             "-tap",
+            "-srcnodata", str(NODATA_VALUE),
+            "-dstnodata", str(NODATA_VALUE),
+            "-ot", "Float32",
             str(filtered_file(base_name)),
             str(output)
         ]

@@ -7,7 +7,7 @@ PROCESSED_DIR = BASE_DIR / "processed"
 OUTPUT_DIR = BASE_DIR / "output"
 
 RESOLUTIONS = [50000, 20000, 10000, 5000, 2000, 1000, 500, 200, 100]
-NODATA_VALUE = 0
+NODATA_VALUE  = -9999.0
 
 GDALWARP = Path(r"C:\Users\jwd10\AppData\Local\Programs\OSGeo4W\bin\gdalwarp.exe")
 
