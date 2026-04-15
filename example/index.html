@@ -1,94 +1,296 @@
-<div id="map" style="height: 100%; width: 100%"></div>
-
-<script src="https://unpkg.com/d3@7"></script>
-<script src="https://cdn.jsdelivr.net/npm/gridviz"></script>
-<script src="https://cdn.jsdelivr.net/npm/gridviz-parquet@0.9.0"></script>
-<script src="https://cdn.jsdelivr.net/npm/gridviz-eurostat@2.0.0"></script>
-
-<script>
-  const TILESURL =
-    "http://127.0.0.1:5500/tmp/output/air-filtration_map_use_tonnes_2021/";
-  const DATAFIELD = "air-filtration_map_use_tonnes_2021"; // change this to your actual parquet field
-
-  const map = new gridviz.Map(document.getElementById("map"), {
-    x: 4500000,
-    y: 2900000,
-    z: 5000,
-  });
-
-  const dataset = new gridviz.MultiResolutionDataset(
-    [100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000],
-    (resolution) =>
-      new gviz_par.TiledParquetGrid(map, TILESURL + resolution + "/"),
-  );
-
-  const classNumber = 6;
-  const colorArray = [];
-  for (let i = 0; i < classNumber; i++) {
-    colorArray.push(d3.interpolateYlGnBu((0.85 * i) / (classNumber - 1)));
-  }
-
-  const backgroundLayer = new gridviz.BackgroundLayer(
-    gridviz_eurostat.giscoBackgroundLayer(
-      "OSMPositronBackground",
-      18,
-      "EPSG3035",
-    ),
-  );
-
-  const style = new gridviz.SquareColorCategoryWebGLStyle({
-    viewScale: (cells, r) => {
-      console.log(cells);
-      const values = cells
-        .map((c) => c[DATAFIELD])
-        .filter((v) => v !== undefined && v !== null && v >= 0);
-
-      const maxValue = d3.max(values) || 0;
-      const breaks = [];
-
-      for (let i = 1; i < classNumber; i++) {
-        breaks.push((maxValue * i) / classNumber);
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gridviz Map</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
 
-      return gridviz.classifier(breaks);
-    },
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        background: #0e1117;
+        font-family: "DM Mono", "Courier New", monospace;
+      }
 
-    code: (c, r, z, classifier) => {
-      const v = c[DATAFIELD];
-      if (v === undefined || v === null || v < 0) return "na";
-      return classifier(v);
-    },
+      #map {
+        height: 100%;
+        width: 100%;
+      }
 
-    color: {
-      0: colorArray[0],
-      1: colorArray[1],
-      2: colorArray[2],
-      3: colorArray[3],
-      4: colorArray[4],
-      5: colorArray[5],
-      na: "#d0d0d0",
-    },
-  });
+      /* ── Dataset selector panel ── */
+      #dataset-panel {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 320px;
+      }
 
-  const legend = new gridviz.ColorDiscreteLegend({
-    title: "Air filtration",
-    width: 300,
-    height: 20,
-    colors: () => colorArray,
-    breaks: (viewScale) => viewScale?.breaks,
-    labelFormat: (d) => d.toFixed(2),
-  });
+      #dataset-panel label {
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(180, 210, 255, 0.55);
+        padding-left: 2px;
+      }
 
-  style.legends = [legend];
+      #dataset-select {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 100%;
+        padding: 9px 36px 9px 14px;
+        font-family: "DM Mono", "Courier New", monospace;
+        font-size: 11.5px;
+        color: rgba(220, 235, 255, 0.92);
+        background:
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2388aacc' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")
+            no-repeat right 12px center,
+          rgba(15, 25, 45, 0.72);
+        backdrop-filter: blur(14px) saturate(160%);
+        -webkit-backdrop-filter: blur(14px) saturate(160%);
+        border: 1px solid rgba(100, 150, 220, 0.22);
+        border-radius: 8px;
+        box-shadow:
+          0 4px 24px rgba(0, 0, 0, 0.45),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+        outline: none;
+      }
 
-  const gridLayer = new gridviz.GridLayer(dataset, [style], {
-    minPixelsPerCell: 3,
-    cellInfoHTML: (c) =>
-      c[DATAFIELD] !== undefined && c[DATAFIELD] !== null
-        ? `<b>${c[DATAFIELD]}</b>`
-        : undefined,
-  });
+      #dataset-select:hover {
+        border-color: rgba(100, 160, 255, 0.45);
+        box-shadow:
+          0 4px 28px rgba(0, 80, 200, 0.25),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
 
-  map.layers = [backgroundLayer, gridLayer];
-  map.redraw();
-</script>
+      #dataset-select:focus {
+        border-color: rgba(100, 170, 255, 0.6);
+        box-shadow:
+          0 0 0 3px rgba(80, 140, 255, 0.15),
+          0 4px 24px rgba(0, 0, 0, 0.4);
+      }
+
+      /* Style the options (limited browser support, but improves Chromium) */
+      #dataset-select option {
+        background: #111827;
+        color: #c8dcf5;
+        font-size: 11.5px;
+      }
+    </style>
+    <!-- optional: nice mono font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <!-- Dataset selector -->
+    <div id="dataset-panel">
+      <label>Dataset</label>
+      <select id="dataset-select">
+        <option value="air-filtration_map_use_tonnes_2021">
+          air-filtration_map_use_tonnes_2021
+        </option>
+        <option
+          value="carbon-net-sequestration_map_use_monetary_EURO-real_2021"
+        >
+          carbon-net-sequestration_map_use_monetary_EURO-real_2021
+        </option>
+        <option value="carbon-net-sequestration_map_use_tonnes_2021">
+          carbon-net-sequestration_map_use_tonnes_2021
+        </option>
+        <option value="carbon-retention_map_closing-stock_tonnes_2021">
+          carbon-retention_map_closing-stock_tonnes_2021
+        </option>
+        <option value="crop-pollination_map_demand_hectares_2021">
+          crop-pollination_map_demand_hectares_2021
+        </option>
+        <option value="crop-pollination_map_supply_EURO-current_2021">
+          crop-pollination_map_supply_EURO-current_2021
+        </option>
+        <option value="crop-pollination_map_supply_EURO-real_2021">
+          crop-pollination_map_supply_EURO-real_2021
+        </option>
+        <option value="crop-pollination_map_supply_tonnes_2021">
+          crop-pollination_map_supply_tonnes_2021
+        </option>
+        <option value="crop-pollination_map_unmet_hectares_2021">
+          crop-pollination_map_unmet_hectares_2021
+        </option>
+        <option value="crop-pollination_map_use_EURO-current_2021">
+          crop-pollination_map_use_EURO-current_2021
+        </option>
+        <option value="crop-pollination_map_use_EURO-real_2021">
+          crop-pollination_map_use_EURO-real_2021
+        </option>
+        <option value="crop-pollination_map_use_tonnes_2021">
+          crop-pollination_map_use_tonnes_2021
+        </option>
+        <option value="crop-pollination-long_map_potential_SPA_binary_2021">
+          crop-pollination-long_map_potential_SPA_binary_2021
+        </option>
+        <option value="crop-pollination-short_map_potential_SPA_binary_2021">
+          crop-pollination-short_map_potential_SPA_binary_2021
+        </option>
+        <option value="crop-provision_map_use_EURO-real_2021">
+          crop-provision_map_use_EURO-real_2021
+        </option>
+        <option value="crop-provision_map_use_tonne_2021">
+          crop-provision_map_use_tonne_2021
+        </option>
+        <option value="flood-control_map_mismatch_hectare_2018">
+          flood-control_map_mismatch_hectare_2018
+        </option>
+        <option value="flood-control_map_unmet_demand_population_2018">
+          flood-control_map_unmet_demand_population_2018
+        </option>
+        <option value="flood-control_map_use_hectare_2018">
+          flood-control_map_use_hectare_2018
+        </option>
+        <option value="flood-control_map_use_population_2018">
+          flood-control_map_use_population_2018
+        </option>
+        <option value="flood-control_map_value_EURO-real_2018">
+          flood-control_map_value_EURO-real_2018
+        </option>
+        <option value="Soil-Retention_map_mismatch_tonnes_2021">
+          Soil-Retention_map_mismatch_tonnes_2021
+        </option>
+        <option value="Soil-Retention_map_potential_ratio_2021">
+          Soil-Retention_map_potential_ratio_2021
+        </option>
+        <option value="Soil-Retention_map_use_tonnes_2021">
+          Soil-Retention_map_use_tonnes_2021
+        </option>
+        <option value="Soil-Retention_map_use-cropland_EURO-real_2021">
+          Soil-Retention_map_use-cropland_EURO-real_2021
+        </option>
+      </select>
+    </div>
+
+    <script src="https://unpkg.com/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gridviz"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gridviz-parquet@0.9.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gridviz-eurostat@2.0.0"></script>
+
+    <script>
+      const BASE_URL = "http://localhost:5500/tmp/output/";
+
+      let currentDatafield = "air-filtration_map_use_tonnes_2021";
+
+      const map = new gridviz.Map(document.getElementById("map"), {
+        x: 4500000,
+        y: 2900000,
+        z: 5000,
+      });
+
+      const classNumber = 6;
+      const colorArray = [];
+      for (let i = 0; i < classNumber; i++) {
+        colorArray.push(d3.interpolateYlGnBu((0.85 * i) / (classNumber - 1)));
+      }
+
+      const backgroundLayer = new gridviz.BackgroundLayer(
+        gridviz_eurostat.giscoBackgroundLayer(
+          "OSMPositronBackground",
+          18,
+          "EPSG3035",
+        ),
+      );
+
+      function buildGridLayer(datafield) {
+        const tilesUrl = BASE_URL + datafield + "/";
+
+        const dataset = new gridviz.MultiResolutionDataset(
+          [100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000],
+          (resolution) =>
+            new gviz_par.TiledParquetGrid(map, tilesUrl + resolution + "/"),
+        );
+
+        const style = new gridviz.SquareColorCategoryWebGLStyle({
+          viewScale: (cells, r) => {
+            const values = cells
+              .map((c) => c[datafield])
+              .filter((v) => v !== undefined && v !== null && v >= 0);
+
+            const maxValue = d3.max(values) || 0;
+            const breaks = [];
+            for (let i = 1; i < classNumber; i++) {
+              breaks.push((maxValue * i) / classNumber);
+            }
+            return gridviz.classifier(breaks);
+          },
+
+          code: (c, r, z, classifier) => {
+            const v = c[datafield];
+            if (v === undefined || v === null || v < 0) return "na";
+            return classifier(v);
+          },
+
+          color: {
+            0: colorArray[0],
+            1: colorArray[1],
+            2: colorArray[2],
+            3: colorArray[3],
+            4: colorArray[4],
+            5: colorArray[5],
+            na: "#d0d0d0",
+          },
+        });
+
+        const legend = new gridviz.ColorDiscreteLegend({
+          title: datafield,
+          width: 300,
+          height: 20,
+          colors: () => colorArray,
+          breaks: (viewScale) => viewScale?.breaks,
+          labelFormat: (d) => d.toFixed(2),
+        });
+
+        style.legends = [legend];
+
+        return new gridviz.GridLayer(dataset, [style], {
+          minPixelsPerCell: 1,
+          cellInfoHTML: (c) =>
+            c[datafield] !== undefined && c[datafield] !== null
+              ? `<b>${c[datafield]}</b>`
+              : undefined,
+        });
+      }
+
+      // Initial render
+      map.layers = [backgroundLayer, buildGridLayer(currentDatafield)];
+      map.redraw();
+
+      // Selector change handler
+      document
+        .getElementById("dataset-select")
+        .addEventListener("change", (e) => {
+          currentDatafield = e.target.value;
+          map.layers = [backgroundLayer, buildGridLayer(currentDatafield)];
+          map.redraw();
+        });
+
+      // Set initial select value to match default
+      document.getElementById("dataset-select").value = currentDatafield;
+    </script>
+  </body>
+</html>
