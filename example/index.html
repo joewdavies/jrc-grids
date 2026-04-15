@@ -1,0 +1,93 @@
+<div id="map" style="height: 100%; width: 100%"></div>
+
+<script src="https://unpkg.com/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/gridviz"></script>
+<script src="https://cdn.jsdelivr.net/npm/gridviz-parquet@0.9.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/gridviz-eurostat@2.0.0"></script>
+
+<script>
+  const TILESURL = "http://127.0.0.1:5500/tiles/air-filtration-2021/";
+  const DATAFIELD = "air-filtration_map_use_tonnes_2021"; // change this to your actual parquet field
+
+  const map = new gridviz.Map(document.getElementById("map"), {
+    x: 4500000,
+    y: 2900000,
+    z: 5000,
+  });
+
+  const dataset = new gridviz.MultiResolutionDataset(
+    [100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000],
+    (resolution) =>
+      new gviz_par.TiledParquetGrid(map, TILESURL + resolution + "/"),
+  );
+
+  const classNumber = 6;
+  const colorArray = [];
+  for (let i = 0; i < classNumber; i++) {
+    colorArray.push(d3.interpolateYlGnBu((0.85 * i) / (classNumber - 1)));
+  }
+
+  const backgroundLayer = new gridviz.BackgroundLayer(
+    gridviz_eurostat.giscoBackgroundLayer(
+      "OSMPositronBackground",
+      18,
+      "EPSG3035",
+    ),
+  );
+
+  const style = new gridviz.SquareColorCategoryWebGLStyle({
+    viewScale: (cells, r) => {
+      console.log(cells);
+      const values = cells
+        .map((c) => c[DATAFIELD])
+        .filter((v) => v !== undefined && v !== null && v >= 0);
+
+      const maxValue = d3.max(values) || 0;
+      const breaks = [];
+
+      for (let i = 1; i < classNumber; i++) {
+        breaks.push((maxValue * i) / classNumber);
+      }
+
+      return gridviz.classifier(breaks);
+    },
+
+    code: (c, r, z, classifier) => {
+      const v = c[DATAFIELD];
+      if (v === undefined || v === null || v < 0) return "na";
+      return classifier(v);
+    },
+
+    color: {
+      0: colorArray[0],
+      1: colorArray[1],
+      2: colorArray[2],
+      3: colorArray[3],
+      4: colorArray[4],
+      5: colorArray[5],
+      na: "#d0d0d0",
+    },
+  });
+
+  const legend = new gridviz.ColorDiscreteLegend({
+    title: "Air filtration",
+    width: 300,
+    height: 20,
+    colors: () => colorArray,
+    breaks: (viewScale) => viewScale?.breaks,
+    labelFormat: (d) => d,
+  });
+
+  style.legends = [legend];
+
+  const gridLayer = new gridviz.GridLayer(dataset, [style], {
+    minPixelsPerCell: 3,
+    cellInfoHTML: (c) =>
+      c[DATAFIELD] !== undefined && c[DATAFIELD] !== null
+        ? `<b>${c[DATAFIELD]}</b>`
+        : undefined,
+  });
+
+  map.layers = [backgroundLayer, gridLayer];
+  map.redraw();
+</script>

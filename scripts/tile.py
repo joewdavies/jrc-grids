@@ -11,9 +11,9 @@ if __name__ == '__main__':
         gridtiler_raster.tiling_raster(
             {
                 "air-filtration_map_use_tonnes_2021": {
-                    "file": INPUT_FOLDER_PATH + f"air-filtration_map_use_tonnes_2021_{res}.tif",
+                    "file": INPUT_FOLDER_PATH + f"air-filtration_map_use_tonnes_2021_filtered_{res}.tif",
                     "band": 1,
-                    "no_data_values": [255, 254, 0]
+                    "no_data_values": [-9999.0]
                 },
             },
             OUTPUT_FOLDER_PATH + str(res),
