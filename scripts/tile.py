@@ -1,23 +1,37 @@
 from pygridmap import gridtiler_raster
+import shutil
 
-INPUT_FOLDER_PATH = "../tmp/input/"
-OUTPUT_FOLDER_PATH = "../tmp/output/"
+from config import RESOLUTIONS, NODATA_VALUE, aggregated_file, tiles_dir
 
-if __name__ == '__main__':
-    print("start")
-    for res in [50000, 20000, 10000, 5000, 2000, 1000, 500, 200, 100]:
-        print(res)
+def run(base_name: str, overwrite=True, num_processors_to_use=3):
+    print(f"=== TILE {base_name} ===")
+
+    for res in RESOLUTIONS:
+        out_dir = tiles_dir(base_name, res)
+
+        if out_dir.exists():
+            if overwrite:
+                print(f"{res} exists, overwriting")
+                shutil.rmtree(out_dir)
+            else:
+                print(f"{res} exists, skipping")
+                continue
+        else:
+            print(res)
 
         gridtiler_raster.tiling_raster(
             {
-                "air-filtration_map_use_tonnes_2021": {
-                    "file": INPUT_FOLDER_PATH + f"air-filtration_map_use_tonnes_2021_filtered_{res}.tif",
+                base_name: {
+                    "file": str(aggregated_file(base_name, res)),
                     "band": 1,
-                    "no_data_values": [-9999.0]
+                    "no_data_values": [NODATA_VALUE]
                 },
             },
-            OUTPUT_FOLDER_PATH + str(res),
+            str(out_dir),
             tile_size_cell=256,
             format="parquet",
-            num_processors_to_use=6
+            num_processors_to_use=num_processors_to_use
         )
+
+if __name__ == "__main__":
+    run("example_name", overwrite=True, num_processors_to_use=3)

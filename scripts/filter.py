@@ -2,10 +2,7 @@ import rasterio
 import numpy as np
 from scipy.ndimage import binary_dilation
 
-INPUT_FILE = "../tmp/input/air-filtration_map_use_tonnes_2021.tif"
-OUTPUT_FILE = "../tmp/input/air-filtration_map_use_tonnes_2021_filtered.tif"
-
-NODATA_VALUE = -9999.0
+from config import NODATA_VALUE, raw_file, filtered_file
 
 def expand_mask(mask: np.ndarray) -> np.ndarray:
     structuring_element = np.array([
@@ -30,6 +27,17 @@ def process(input_file: str, output_file: str) -> None:
         with rasterio.open(output_file, "w", **profile) as dst:
             dst.write(data, 1)
 
-print("start")
-process(INPUT_FILE, OUTPUT_FILE)
-print("done")
+def run(base_name: str, overwrite=True):
+    print(f"=== FILTER {base_name} ===")
+
+    output = filtered_file(base_name)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    if output.exists() and not overwrite:
+        print("filtered file exists, skipping")
+        return
+
+    process(str(raw_file(base_name)), str(output))
+
+if __name__ == "__main__":
+    run("air-filtration_map_use_tonnes_2021", overwrite=True)
