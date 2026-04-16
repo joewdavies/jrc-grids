@@ -202,12 +202,14 @@
         z: 5000,
       });
 
-      const classNumber = 6;
+      const classNumber = 12;
       const colorArray = [];
+
       for (let i = 0; i < classNumber; i++) {
         colorArray.push(d3.interpolateYlGnBu((0.85 * i) / (classNumber - 1)));
       }
 
+      //todo switch to a hillshade
       const backgroundLayer = new gridviz.BackgroundLayer(
         gridviz_eurostat.giscoBackgroundLayer(
           "OSMPositronBackground",
@@ -215,6 +217,18 @@
           "EPSG3035",
         ),
       );
+
+      const backgroundLayerElevation = new gridviz.BackgroundLayer({
+        url: "https://ec.europa.eu/eurostat/cache/GISCO/mbkg/elevation/",
+        resolutions: Array.from(
+          { length: 13 },
+          (_, i) => 114688 / Math.pow(2, i),
+        ),
+        origin: [0, 6000000],
+        nbPix: 256,
+        pixelationCoefficient: 1,
+        filterColor: () => "#fff8",
+      });
 
       function buildGridLayer(datafield) {
         const tilesUrl = BASE_URL + datafield + "/";
@@ -252,13 +266,19 @@
             3: colorArray[3],
             4: colorArray[4],
             5: colorArray[5],
+            6: colorArray[6],
+            7: colorArray[7],
+            8: colorArray[8],
+            9: colorArray[9],
+            10: colorArray[10],
+            11: colorArray[11],
             na: "#d0d0d0",
           },
         });
 
         const legend = new gridviz.ColorDiscreteLegend({
           title: datafield,
-          width: 300,
+          width: 400,
           height: 20,
           colors: () => colorArray,
           breaks: (viewScale) => viewScale?.breaks,
@@ -268,7 +288,7 @@
         style.legends = [legend];
 
         return new gridviz.GridLayer(dataset, [style], {
-          minPixelsPerCell: 1,
+          minPixelsPerCell: 2,
           cellInfoHTML: (c) =>
             c[datafield] !== undefined && c[datafield] !== null
               ? `<b>${c[datafield]}</b>`
@@ -277,7 +297,7 @@
       }
 
       // Initial render
-      map.layers = [backgroundLayer, buildGridLayer(currentDatafield)];
+      map.layers = [backgroundLayerElevation, buildGridLayer(currentDatafield)];
       map.redraw();
 
       // Selector change handler
@@ -285,7 +305,10 @@
         .getElementById("dataset-select")
         .addEventListener("change", (e) => {
           currentDatafield = e.target.value;
-          map.layers = [backgroundLayer, buildGridLayer(currentDatafield)];
+          map.layers = [
+            backgroundLayerElevation,
+            buildGridLayer(currentDatafield),
+          ];
           map.redraw();
         });
 

@@ -4,8 +4,8 @@ Tiled grids of open JRC data for use with [gridviz](https://github.com/eurostat/
 
 ## Steps:
 
-1 update config.py with your values
-2 run `python pipeline.py air-filtration_map_use_tonnes_2021` for a single file (TIF)
+1 update config.py with your values  
+2 run `python pipeline.py nameOfTifFile --tile-workers 6` for a single file (TIF)
 
 You can run the pipeline for all TIF files in a folder like so:
 
@@ -22,3 +22,34 @@ and
 ## Examples
 
 - European forests: see [tiled-europe-forest](https://github.com/jgaffuri/tiled-europe-forest)
+
+- For the following datasets: [check out this demo](https://github.com/joewdavies/jrc-grids/example)
+  - air-filtration_map_use_tonnes_2021
+  - carbon-net-sequestration_map_use_monetary_EURO-real_2021
+  - carbon-net-sequestration_map_use_tonnes_2021
+  - carbon-retention_map_closing-stock_tonnes_2021
+  - crop-pollination_map_demand_hectares_2021
+  - crop-pollination_map_supply_EURO-current_2021
+  - crop-pollination_map_supply_EURO-real_2021
+  - crop-pollination_map_supply_tonnes_2021
+  - crop-pollination_map_unmet_hectares_2021
+  - crop-pollination_map_use_EURO-current_2021
+  - crop-pollination_map_use_EURO-real_2021
+  - crop-pollination_map_use_tonnes_2021
+  - crop-pollination-long_map_potential_SPA_binary_2021
+  - crop-pollination-short_map_potential_SPA_binary_2021
+  - crop-provision_map_use_EURO-real_2021
+  - crop-provision_map_use_tonne_2021
+  - flood-control_map_mismatch_hectare_2018
+  - flood-control_map_unmet_demand_population_2018
+  - flood-control_map_use_hectare_2018
+  - flood-control_map_use_population_2018
+  - flood-control_map_value_EURO-real_2018
+  - Soil-Retention_map_mismatch_tonnes_2021
+  - Soil-Retention_map_potential_ratio_2021
+  - Soil-Retention_map_use_tonnes_2021
+  - Soil-Retention_map_use-cropland_EURO-real_2021
+
+## Commands
+
+python pipeline.py crop-pollination_map_demand_hectares_2021 --tile-workers 8
