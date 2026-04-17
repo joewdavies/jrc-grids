@@ -1022,9 +1022,9 @@ Batch done in 75m 42.9s
 Failed:
 
 - carbon-net-sequestration_map_use_tonnes_2021 ✅
-- crop-pollination_map_demand_hectares_2021
-- crop-pollination-long_map_potential_SPA_binary_2021
-- crop-pollination-short_map_potential_SPA_binary_2021
-- crop-provision_map_use_tonne_2021
-- flood-control_map_use_hectare_2018
+- crop-pollination_map_demand_hectares_2021 ❌ nodata
+- crop-pollination-long_map_potential-SPA_binary_2021 ✅
+- crop-pollination-short_map_potential-SPA_binary_2021 ✅
+- crop-provision_map_use_tonne_2021 ✅
+- flood-control_map_use_hectare_2018 ✅
 - flood-control_map_use_population_2018

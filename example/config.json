@@ -1,0 +1,212 @@
+{
+  "datasets": [
+    {
+      "id": "air-filtration_map_use_tonnes_2021",
+      "label": "Air Filtration – Use (tonnes, 2021)",
+      "service": "air-filtration",
+      "variable": "use",
+      "unit": "tonnes",
+      "year": 2021
+    },
+    {
+      "id": "carbon-net-sequestration_map_use_monetary_EURO-real_2021",
+      "label": "Carbon Net Sequestration – Use, Monetary (€ real, 2021)",
+      "service": "carbon-net-sequestration",
+      "variable": "use_monetary",
+      "unit": "EURO-real",
+      "year": 2021
+    },
+    {
+      "id": "carbon-net-sequestration_map_use_tonnes_2021",
+      "label": "Carbon Net Sequestration – Use (tonnes, 2021)",
+      "service": "carbon-net-sequestration",
+      "variable": "use",
+      "unit": "tonnes",
+      "year": 2021
+    },
+    {
+      "id": "carbon-retention_map_closing-stock_tonnes_2021",
+      "label": "Carbon Retention – Closing Stock (tonnes, 2021)",
+      "service": "carbon-retention",
+      "variable": "closing-stock",
+      "unit": "tonnes",
+      "year": 2021
+    },
+    {
+      "id": "crop-pollination_map_demand_hectares_2021",
+      "label": "Crop Pollination – Demand (hectares, 2021)",
+      "service": "crop-pollination",
+      "variable": "demand",
+      "unit": "hectares",
+      "year": 2021
+    },
+    {
+      "id": "crop-pollination_map_supply_EURO-current_2021",
+      "label": "Crop Pollination – Supply (€ current, 2021)",
+      "service": "crop-pollination",
+      "variable": "supply",
+      "unit": "EURO-current",
+      "year": 2021
+    },
+    {
+      "id": "crop-pollination_map_supply_EURO-real_2021",
+      "label": "Crop Pollination – Supply (€ real, 2021)",
+      "service": "crop-pollination",
+      "variable": "supply",
+      "unit": "EURO-real",
+      "year": 2021
+    },
+    {
+      "id": "crop-pollination_map_supply_tonnes_2021",
+      "label": "Crop Pollination – Supply (tonnes, 2021)",
+      "service": "crop-pollination",
+      "variable": "supply",
+      "unit": "tonnes",
+      "year": 2021
+    },
+    {
+      "id": "crop-pollination_map_unmet_hectares_2021",
+      "label": "Crop Pollination – Unmet Demand (hectares, 2021)",
+      "service": "crop-pollination",
+      "variable": "unmet",
+      "unit": "hectares",
+      "year": 2021
+    },
+    {
+      "id": "crop-pollination_map_use_EURO-current_2021",
+      "label": "Crop Pollination – Use (€ current, 2021)",
+      "service": "crop-pollination",
+      "variable": "use",
+      "unit": "EURO-current",
+      "year": 2021
+    },
+    {
+      "id": "crop-pollination_map_use_EURO-real_2021",
+      "label": "Crop Pollination – Use (€ real, 2021)",
+      "service": "crop-pollination",
+      "variable": "use",
+      "unit": "EURO-real",
+      "year": 2021
+    },
+    {
+      "id": "crop-pollination_map_use_tonnes_2021",
+      "label": "Crop Pollination – Use (tonnes, 2021)",
+      "service": "crop-pollination",
+      "variable": "use",
+      "unit": "tonnes",
+      "year": 2021
+    },
+    {
+      "id": "crop-pollination-long_map_potential-SPA_binary_2021",
+      "label": "Crop Pollination Long-range – Potential SPA (binary, 2021)",
+      "service": "crop-pollination-long",
+      "variable": "potential-SPA",
+      "unit": "binary",
+      "year": 2021
+    },
+    {
+      "id": "crop-pollination-short_map_potential-SPA_binary_2021",
+      "label": "Crop Pollination Short-range – Potential SPA (binary, 2021)",
+      "service": "crop-pollination-short",
+      "variable": "potential-SPA",
+      "unit": "binary",
+      "year": 2021
+    },
+    {
+      "id": "crop-provision_map_use_EURO-real_2021",
+      "label": "Crop Provision – Use (€ real, 2021)",
+      "service": "crop-provision",
+      "variable": "use",
+      "unit": "EURO-real",
+      "year": 2021
+    },
+    {
+      "id": "crop-provision_map_use_tonne_2021",
+      "label": "Crop Provision – Use (tonnes, 2021)",
+      "service": "crop-provision",
+      "variable": "use",
+      "unit": "tonnes",
+      "year": 2021
+    },
+    {
+      "id": "flood-control_map_mismatch_hectare_2018",
+      "label": "Flood Control – Mismatch (hectares, 2018)",
+      "service": "flood-control",
+      "variable": "mismatch",
+      "unit": "hectares",
+      "year": 2018
+    },
+    {
+      "id": "flood-control_map_unmet_demand_population_2018",
+      "label": "Flood Control – Unmet Demand (population, 2018)",
+      "service": "flood-control",
+      "variable": "unmet_demand",
+      "unit": "population",
+      "year": 2018
+    },
+    {
+      "id": "flood-control_map_use_hectare_2018",
+      "label": "Flood Control – Use (hectares, 2018)",
+      "service": "flood-control",
+      "variable": "use",
+      "unit": "hectares",
+      "year": 2018
+    },
+    {
+      "id": "flood-control_map_use_population_2018",
+      "label": "Flood Control – Use (population, 2018)",
+      "service": "flood-control",
+      "variable": "use",
+      "unit": "population",
+      "year": 2018
+    },
+    {
+      "id": "flood-control_map_value_EURO-real_2018",
+      "label": "Flood Control – Value (€ real, 2018)",
+      "service": "flood-control",
+      "variable": "value",
+      "unit": "EURO-real",
+      "year": 2018
+    },
+    {
+      "id": "Soil-Retention_map_mismatch_tonnes_2021",
+      "label": "Soil Retention – Mismatch (tonnes, 2021)",
+      "service": "soil-retention",
+      "variable": "mismatch",
+      "unit": "tonnes",
+      "year": 2021
+    },
+    {
+      "id": "Soil-Retention_map_potential_ratio_2021",
+      "label": "Soil Retention – Potential (ratio, 2021)",
+      "service": "soil-retention",
+      "variable": "potential",
+      "unit": "ratio",
+      "year": 2021
+    },
+    {
+      "id": "Soil-Retention_map_use_tonnes_2021",
+      "label": "Soil Retention – Use (tonnes, 2021)",
+      "service": "soil-retention",
+      "variable": "use",
+      "unit": "tonnes",
+      "year": 2021
+    },
+    {
+      "id": "Soil-Retention_map_use-cropland_EURO-real_2021",
+      "label": "Soil Retention – Use, Cropland (€ real, 2021)",
+      "service": "soil-retention",
+      "variable": "use-cropland",
+      "unit": "EURO-real",
+      "year": 2021
+    },
+    {
+      "id": "cooling_by_vegetation",
+      "label": "Cooling by Vegetation",
+      "service": "cooling",
+      "variable": "cooling",
+      "unit": null,
+      "year": null
+    }
+  ]
+}

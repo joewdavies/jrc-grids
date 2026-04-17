@@ -37,13 +37,7 @@
         min-width: 320px;
       }
 
-      #dataset-panel label {
-        font-size: 10px;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: rgba(180, 210, 255, 0.55);
-        padding-left: 2px;
-      }
+
 
       #dataset-select {
         appearance: none;
@@ -85,14 +79,12 @@
           0 4px 24px rgba(0, 0, 0, 0.4);
       }
 
-      /* Style the options (limited browser support, but improves Chromium) */
       #dataset-select option {
         background: #111827;
         color: #c8dcf5;
         font-size: 11.5px;
       }
     </style>
-    <!-- optional: nice mono font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap"
@@ -100,90 +92,20 @@
     />
   </head>
   <body>
+    <div
+      id="title"
+      style="position: fixed; top: 16px; left: 16px; z-index: 1000"
+    >
+      <h1 class="title-text">INCA</h1>
+      <h4 class="title-text">
+        Integrated system for Natural Capital Accounting
+      </h2>
+    </div>
     <div id="map"></div>
 
-    <!-- Dataset selector -->
     <div id="dataset-panel">
       <label>Dataset</label>
-      <select id="dataset-select">
-        <option value="air-filtration_map_use_tonnes_2021">
-          air-filtration_map_use_tonnes_2021
-        </option>
-        <option
-          value="carbon-net-sequestration_map_use_monetary_EURO-real_2021"
-        >
-          carbon-net-sequestration_map_use_monetary_EURO-real_2021
-        </option>
-        <option value="carbon-net-sequestration_map_use_tonnes_2021">
-          carbon-net-sequestration_map_use_tonnes_2021
-        </option>
-        <option value="carbon-retention_map_closing-stock_tonnes_2021">
-          carbon-retention_map_closing-stock_tonnes_2021
-        </option>
-        <option value="crop-pollination_map_demand_hectares_2021">
-          crop-pollination_map_demand_hectares_2021
-        </option>
-        <option value="crop-pollination_map_supply_EURO-current_2021">
-          crop-pollination_map_supply_EURO-current_2021
-        </option>
-        <option value="crop-pollination_map_supply_EURO-real_2021">
-          crop-pollination_map_supply_EURO-real_2021
-        </option>
-        <option value="crop-pollination_map_supply_tonnes_2021">
-          crop-pollination_map_supply_tonnes_2021
-        </option>
-        <option value="crop-pollination_map_unmet_hectares_2021">
-          crop-pollination_map_unmet_hectares_2021
-        </option>
-        <option value="crop-pollination_map_use_EURO-current_2021">
-          crop-pollination_map_use_EURO-current_2021
-        </option>
-        <option value="crop-pollination_map_use_EURO-real_2021">
-          crop-pollination_map_use_EURO-real_2021
-        </option>
-        <option value="crop-pollination_map_use_tonnes_2021">
-          crop-pollination_map_use_tonnes_2021
-        </option>
-        <option value="crop-pollination-long_map_potential_SPA_binary_2021">
-          crop-pollination-long_map_potential_SPA_binary_2021
-        </option>
-        <option value="crop-pollination-short_map_potential_SPA_binary_2021">
-          crop-pollination-short_map_potential_SPA_binary_2021
-        </option>
-        <option value="crop-provision_map_use_EURO-real_2021">
-          crop-provision_map_use_EURO-real_2021
-        </option>
-        <option value="crop-provision_map_use_tonne_2021">
-          crop-provision_map_use_tonne_2021
-        </option>
-        <option value="flood-control_map_mismatch_hectare_2018">
-          flood-control_map_mismatch_hectare_2018
-        </option>
-        <option value="flood-control_map_unmet_demand_population_2018">
-          flood-control_map_unmet_demand_population_2018
-        </option>
-        <option value="flood-control_map_use_hectare_2018">
-          flood-control_map_use_hectare_2018
-        </option>
-        <option value="flood-control_map_use_population_2018">
-          flood-control_map_use_population_2018
-        </option>
-        <option value="flood-control_map_value_EURO-real_2018">
-          flood-control_map_value_EURO-real_2018
-        </option>
-        <option value="Soil-Retention_map_mismatch_tonnes_2021">
-          Soil-Retention_map_mismatch_tonnes_2021
-        </option>
-        <option value="Soil-Retention_map_potential_ratio_2021">
-          Soil-Retention_map_potential_ratio_2021
-        </option>
-        <option value="Soil-Retention_map_use_tonnes_2021">
-          Soil-Retention_map_use_tonnes_2021
-        </option>
-        <option value="Soil-Retention_map_use-cropland_EURO-real_2021">
-          Soil-Retention_map_use-cropland_EURO-real_2021
-        </option>
-      </select>
+      <select id="dataset-select"></select>
     </div>
 
     <script src="https://unpkg.com/d3@7"></script>
@@ -194,29 +116,17 @@
     <script>
       const BASE_URL = "http://localhost:5500/tmp/output/";
 
-      let currentDatafield = "air-filtration_map_use_tonnes_2021";
+      const classNumber = 12;
+      const colorArray = [];
+      for (let i = 0; i < classNumber; i++) {
+        colorArray.push(d3.interpolateYlGnBu((0.85 * i) / (classNumber - 1)));
+      }
 
       const map = new gridviz.Map(document.getElementById("map"), {
         x: 4500000,
         y: 2900000,
         z: 5000,
       });
-
-      const classNumber = 12;
-      const colorArray = [];
-
-      for (let i = 0; i < classNumber; i++) {
-        colorArray.push(d3.interpolateYlGnBu((0.85 * i) / (classNumber - 1)));
-      }
-
-      //todo switch to a hillshade
-      const backgroundLayer = new gridviz.BackgroundLayer(
-        gridviz_eurostat.giscoBackgroundLayer(
-          "OSMPositronBackground",
-          18,
-          "EPSG3035",
-        ),
-      );
 
       const backgroundLayerElevation = new gridviz.BackgroundLayer({
         url: "https://ec.europa.eu/eurostat/cache/GISCO/mbkg/elevation/",
@@ -230,10 +140,51 @@
         filterColor: () => "#fff8",
       });
 
-      function buildGridLayer(datafield) {
-        const tilesUrl = BASE_URL + datafield + "/";
+      const labelLayer = new gridviz.LabelLayer(
+        gridviz_eurostat.getEuronymeLabelLayer("EUR", 50, {
+          baseURL:
+            "https://ec.europa.eu/assets/estat/E/E4/gisco/pub/euronym/v3/UTF_LATIN/",
+          ccIn: [
+            "AT",
+            "BE",
+            "BG",
+            "HR",
+            "CY",
+            "CZ",
+            "DK",
+            "EE",
+            "FI",
+            "FR",
+            "DE",
+            "GR",
+            "HU",
+            "IE",
+            "IT",
+            "LV",
+            "LT",
+            "LU",
+            "MT",
+            "NL",
+            "PL",
+            "PT",
+            "RO",
+            "SK",
+            "SI",
+            "ES",
+            "SE",
+            "IS",
+            "LI",
+            "NO",
+            "CH",
+          ],
+        }),
+      );
 
-        const dataset = new gridviz.MultiResolutionDataset(
+      function buildGridLayer(dataset) {
+        const { id, label } = dataset;
+        const tilesUrl = BASE_URL + id + "/";
+
+        const gvizDataset = new gridviz.MultiResolutionDataset(
           [100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000],
           (resolution) =>
             new gviz_par.TiledParquetGrid(map, tilesUrl + resolution + "/"),
@@ -242,9 +193,8 @@
         const style = new gridviz.SquareColorCategoryWebGLStyle({
           viewScale: (cells, r) => {
             const values = cells
-              .map((c) => c[datafield])
+              .map((c) => c[id])
               .filter((v) => v !== undefined && v !== null && v >= 0);
-
             const maxValue = d3.max(values) || 0;
             const breaks = [];
             for (let i = 1; i < classNumber; i++) {
@@ -254,7 +204,7 @@
           },
 
           code: (c, r, z, classifier) => {
-            const v = c[datafield];
+            const v = c[id];
             if (v === undefined || v === null || v < 0) return "na";
             return classifier(v);
           },
@@ -276,8 +226,8 @@
           },
         });
 
-        const legend = new gridviz.ColorDiscreteLegend({
-          title: datafield,
+        const legendWidget = new gridviz.ColorDiscreteLegend({
+          title: label,
           width: 400,
           height: 20,
           colors: () => colorArray,
@@ -285,35 +235,53 @@
           labelFormat: (d) => d.toFixed(2),
         });
 
-        style.legends = [legend];
+        style.legends = [legendWidget];
 
-        return new gridviz.GridLayer(dataset, [style], {
+        return new gridviz.GridLayer(gvizDataset, [style], {
           minPixelsPerCell: 2,
           cellInfoHTML: (c) =>
-            c[datafield] !== undefined && c[datafield] !== null
-              ? `<b>${c[datafield]}</b>`
+            c[id] !== undefined && c[id] !== null
+              ? `<b>${c[id]}</b>`
               : undefined,
         });
       }
 
-      // Initial render
-      map.layers = [backgroundLayerElevation, buildGridLayer(currentDatafield)];
-      map.redraw();
+      function setLayer(dataset) {
+        map.layers = [
+          backgroundLayerElevation,
+          buildGridLayer(dataset),
+          labelLayer,
+        ];
+        map.redraw();
+      }
 
-      // Selector change handler
-      document
-        .getElementById("dataset-select")
-        .addEventListener("change", (e) => {
-          currentDatafield = e.target.value;
-          map.layers = [
-            backgroundLayerElevation,
-            buildGridLayer(currentDatafield),
-          ];
-          map.redraw();
-        });
+      // ── Bootstrap: load config then initialise ──
+      fetch("./config.json")
+        .then((r) => r.json())
+        .then(({ datasets }) => {
+          const select = document.getElementById("dataset-select");
 
-      // Set initial select value to match default
-      document.getElementById("dataset-select").value = currentDatafield;
+          // Populate dropdown from config
+          datasets.forEach(({ id, label }) => {
+            const opt = document.createElement("option");
+            opt.value = id;
+            opt.textContent = label;
+            select.appendChild(opt);
+          });
+
+          // Index by id for fast lookup on change
+          const byId = Object.fromEntries(datasets.map((d) => [d.id, d]));
+
+          // Render first dataset
+          const initial = datasets[0];
+          select.value = initial.id;
+          setLayer(initial);
+
+          select.addEventListener("change", (e) => {
+            setLayer(byId[e.target.value]);
+          });
+        })
+        .catch((err) => console.error("Failed to load config.json:", err));
     </script>
   </body>
 </html>
