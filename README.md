@@ -21,6 +21,7 @@ and
 
 ## Examples
 
+- INCA: [demo](https://joewdavies.github.io/jrc-grids/example/)
 - European forests: see [tiled-europe-forest](https://github.com/jgaffuri/tiled-europe-forest)
 
 - For the following datasets: [check out this demo](https://github.com/joewdavies/jrc-grids/example)
