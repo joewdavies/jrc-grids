@@ -24,7 +24,7 @@ and
 - INCA: [demo](https://joewdavies.github.io/jrc-grids/example/)
 - European forests: see [tiled-europe-forest](https://github.com/jgaffuri/tiled-europe-forest)
 
-- For the following datasets: [check out this demo](https://github.com/joewdavies/jrc-grids/example)
+- For the following datasets: [check out this demo](https://joewdavies.github.io/jrc-grids/example/)
   - air-filtration_map_use_tonnes_2021
   - carbon-net-sequestration_map_use_monetary_EURO-real_2021
   - carbon-net-sequestration_map_use_tonnes_2021
