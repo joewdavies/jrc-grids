@@ -205,7 +205,7 @@
 
           code: (c, r, z, classifier) => {
             const v = c[id];
-            if (v === undefined || v === null || v < 0) return "na";
+            if (v === undefined || v === null || v <= 0) return "na";  // ← was v < 0
             return classifier(v);
           },
 
@@ -222,7 +222,7 @@
             9: colorArray[9],
             10: colorArray[10],
             11: colorArray[11],
-            na: "#d0d0d0",
+            na: "#00000000", 
           },
         });
 
